@@ -11,23 +11,29 @@ var blocks = {
      */
     forEach: function (array, options) {
         var time,
-            i = 0;
+            i = 0,
+            timeout = options.block,
+            each = options.each,
+            afterBlock = options.afterBlock,
+            after = options.after;
+
+        if (! timeout || !each) throw new Error('timout and each are required options');
 
         (function block() {
             while (true) {
                 if (i === array.length) {
-                    if (options.afterBlock) options.afterBlock(array[i], i);
-                    if (options.after) options.after();
+                    if (afterBlock) afterBlock(array[i], i);
+                    if (after) after();
                     return;
                 }
                 if (! time) time = +new Date();
-                
-                options.every(array[i], i);
+
+                each(array[i], i);
 
                 i++;
                 if (+new Date() - time < timeout) {
                 } else {
-                    if (options.afterBlock) options.afterBlock(array[i], i);
+                    if (afterBlock) afterBlock(array[i], i);
                     time = null;
                     stack = 0;
                     setTimeout(block, 1);
