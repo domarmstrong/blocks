@@ -1,5 +1,15 @@
-blocked = {
-    forEach: function (array, timeout, options) {
+var blocks = {
+    /**
+     * arguments
+     * ---------
+     * array: data to iterate
+     * options: object
+     *   block: milliseconds to block for. Required
+     *   each: function to run for each array item. arguments (object, i). Required
+     *   afterBlock: function to run after every block of `timeout` arguments (object, i)
+     *   after: function, callback to run when done
+     */
+    forEach: function (array, options) {
         var time,
             i = 0;
 
