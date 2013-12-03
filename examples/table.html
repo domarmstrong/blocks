@@ -27,8 +27,9 @@
     var fragment = document.createDocumentFragment();
     console.time('done');
 
-    blocked.forEach(data, 30, {
-        every: function (obj, i) {
+    blocks.forEach(data, {
+        block: 50,
+        each: function (obj, i) {
             var div = document.createElement('div');
             div.className = 'block';
             div.textContent = i;
