@@ -44,3 +44,9 @@ var blocks = {
     }
 };
 
+try {
+    module.exports = blocks;
+} catch (error) {
+    window.blocks = blocks;
+}
+
