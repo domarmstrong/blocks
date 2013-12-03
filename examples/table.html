@@ -1,0 +1,49 @@
+<html>
+
+<head>
+  <style>
+    #container div {
+      float: left;
+      padding: 1px;
+      font-size: 8px;
+      color: white;
+      margin: 2px;
+      background: blue;
+    }
+  </style>
+</head>
+
+<body>
+  <div id='container'></div>
+
+  <script src='../blocks.js'></script>
+  <script>
+    var data =[];
+    for (var i = 0; i < 50000; i++) {
+        data.push(i);
+    }
+
+    var container = document.getElementById("container");
+    var fragment = document.createDocumentFragment();
+    console.time('done');
+
+    blocked.forEach(data, 30, {
+        every: function (obj, i) {
+            var div = document.createElement('div');
+            div.className = 'block';
+            div.textContent = i;
+            fragment.appendChild(div);
+        },
+        afterBlock: function (obj, i) {
+            console.log('block', i);
+            container.appendChild(fragment);
+        },
+        after: function () {
+            console.timeEnd('done');
+        }
+    });
+  </script>
+</body>
+
+</html>
+
