@@ -31,8 +31,7 @@ var blocks = {
                 each(array[i], i);
 
                 i++;
-                if (+new Date() - time < timeout) {
-                } else {
+                if (! (+new Date() - time < timeout)) {
                     if (afterBlock) afterBlock(array[i], i);
                     time = null;
                     stack = 0;
