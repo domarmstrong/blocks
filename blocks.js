@@ -34,7 +34,6 @@ var blocks = {
                 if (! (+new Date() - time < timeout)) {
                     if (afterBlock) afterBlock(array[i], i);
                     time = null;
-                    stack = 0;
                     setTimeout(block, 1);
                     break;
                 }
