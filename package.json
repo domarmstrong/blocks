@@ -1,0 +1,24 @@
+{
+  "name": "blocks",
+  "version": "1.0.0",
+  "description": "Split long blocking tasks into smaller blocks",
+  "main": "blocks.js",
+  "directories": {
+    "example": "examples"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dominataa/blocks.git"
+  },
+  "keywords": [
+    "blocking",
+    "blocks",
+    "timeslice"
+  ],
+  "author": "Dom Armstrong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dominataa/blocks/issues"
+  },
+  "homepage": "https://github.com/dominataa/blocks#readme"
+}
