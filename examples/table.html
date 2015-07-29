@@ -3,45 +3,69 @@
 <head>
   <style>
     #container div {
-      float: left;
+      display: inline-block;
       padding: 1px;
       font-size: 8px;
       color: white;
       margin: 2px;
-      background: blue;
     }
   </style>
+  <script src='../lib/blocks.js'></script>
 </head>
 
 <body>
   <div id='container'></div>
 
-  <script src='../blocks.js'></script>
   <script>
     var data =[];
-    for (var i = 0; i < 50000; i++) {
+    for (var i = 0; i < 1500; i++) {
         data.push(i);
+    }
+    function wait(ms) {
+      var start = +new Date();
+      while ((+new Date() - start) < ms) { /* noop */ }
     }
 
     var container = document.getElementById("container");
     var fragment = document.createDocumentFragment();
-    console.time('done');
 
-    blocks.forEach(data, {
-        block: 50,
-        each: function (obj, i) {
-            var div = document.createElement('div');
-            div.className = 'block';
-            div.textContent = i;
-            fragment.appendChild(div);
-        },
-        afterBlock: function (obj, i) {
-            console.log('block', i);
-            container.appendChild(fragment);
-        },
-        after: function () {
-            console.timeEnd('done');
-        }
+    // Add a div into the fragment
+    function addDiv(i, color) {
+      wait(1);
+      var div = document.createElement('div');
+      div.className = 'block ' + color;
+      div.textContent = i;
+      div.style.background = color;
+      fragment.appendChild(div);
+    }
+    // Add the contents of fragment to the container
+    function appendDivs() {
+      container.appendChild(fragment);
+    }
+
+    // start 2 loops adding stuff to the DOM
+    // This demonstrates 2 different interactions with the DOM at once
+    // both with slow generation
+    console.time('blocks');
+    blocks.forEach(data, 50, function each(item, i) { addDiv(i, 'blue') }, appendDivs);
+    blocks.forEach(data, 50, function each(item, i) { addDiv(i, 'red') }, appendDivs)
+    .then(function () {
+      // log the time taken
+      // during this time the site would have been usable and other interactions can take place
+      console.timeEnd('blocks');
+    }).then(function () {
+      // Add a separator after the content
+      container.appendChild(document.createElement('hr'));
+    }).then(function () {
+      // add the same amount of content but fully block
+      console.time('nonBlocks');
+      data.forEach(function (item, i) {
+        addDiv(i, 'purple');
+        addDiv(i, 'green');
+      });
+      appendDivs();
+      // during this time the entire site is blocked and nothing else can happen
+      console.timeEnd('nonBlocks');
     });
   </script>
 </body>

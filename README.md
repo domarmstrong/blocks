@@ -1,14 +1,15 @@
 blocks
 ======
 
-Break down large blocking loops into smaller chunks for responsivness
+Break down large blocking loops into smaller chunks that block for a set amount of time
+
+The reason this was created was due to some large tables being rendered that where blocking the UI.
+Blocks allows you to specify an amount of time that you are comfortable blocking for before handing back
+to the event loop to allow other processes to run.
 
 ``` javascript
 // Create a large array of numbers
-var data =[];
-for (var number = 0; number < 50000; number++) {
-    data.push(number);
-}
+var data = new Array(50000).fill(0).map((n, i) => i);
 
 var container = document.getElementById("container");
 var fragment = document.createDocumentFragment();
@@ -16,24 +17,18 @@ var fragment = document.createDocumentFragment();
 // Start a console timer
 console.time('total');
 
-blocks.forEach(data, {
-    block: 50, // How long am i allowed to block for in ms.
-    
-    each: function (item, i) { // Run blocking code for each iteration of the loop until 
-        var div = document.createElement('div');
-        div.className = 'block';
-        div.textContent = item;
-        fragment.appendChild(div);
-    },
-    
-    afterBlock: function (item, i) { // After 50 ms has passed run this function
-        // item, i, will be the same values as passed into the last iteration of each
-        console.log('block', i);
-        container.appendChild(fragment);
-    },
-    
-    after: function () { // Once the loop has finished run this
-        console.timeEnd('total');
-    }
+blocks.forEach(data, 50, function each(item, i) {
+    // Do some slow blocking thing for each item like creating lots of DOM
+    var div = document.createElement('div');
+    div.className = 'block';
+    div.textContent = item;
+    fragment.appendChild(div);
+}, function onBlock(item, i) {
+    // Once the timeout is reached, onBlock is run before handing back to the event loop
+    // item, i, will be the same values as passed into the last iteration of each
+    container.appendChild(fragment);
+}).then(function () {
+    // Once all iterations have finished the promise is resolved
+    console.timeEnd('total');
 });
 ```

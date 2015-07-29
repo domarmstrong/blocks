@@ -1,8 +1,8 @@
 {
   "name": "blocks",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Split long blocking tasks into smaller blocks",
-  "main": "blocks.js",
+  "main": "lib/blocks.js",
   "directories": {
     "example": "examples",
     "test": "test"
@@ -13,7 +13,9 @@
     "mocha": "^2.2.5"
   },
   "scripts": {
-    "test": "mocha --require ./babelinit.js"
+    "test": "mocha --require ./babelinit.js",
+    "pretest": "npm run build",
+    "build": "mkdir -p lib; node_modules/.bin/babel src/blocks.js > lib/blocks.js"
   },
   "repository": {
     "type": "git",

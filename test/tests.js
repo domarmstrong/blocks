@@ -4,7 +4,7 @@
  * Author: Dom Armstrong, Date: 29/07/15
  */
 
-import blocks from '../blocks';
+import blocks from '..';
 import { assert } from 'chai';
 
 /**
@@ -24,52 +24,58 @@ describe('wait', () => {
     let now = +new Date();
     let time = now - start;
 
-    assert.isBelow(time, 11);
-    assert.isAbove(time, 9);
+    assert.isBelow(time, 12);
+    assert.isAbove(time, 8);
   });
 });
 
 describe('blocks.forEach', () => {
-  it('splits the task into blocks of x ms', done => {
+  it('returns a promise', () => {
+    let promise = blocks.forEach([], 1, (item, i) => {});
+    assert.instanceOf(promise, Promise);
+  });
+
+  it('splits the task into blocks of x ms', () => {
     let data = new Array(100).fill(null);
+    let it = new Array(100).fill((i) => {
+      console.log(i);
+      return i;
+    });
     let chunks = 0;
     let items = 0;
-    blocks.forEach(data, {
-      block: 10,
-      each (item, i) {
-        wait(1);
-        items++;
-      },
-      afterBlock () {
-        chunks++;
-      },
-      after () {
-        assert.equal(data.length, items);
-        assert.isAbove(chunks, 10);
-        assert.isBelow(chunks, 12);
-        done();
-      }
+
+    return blocks.forEach(data, 10, (item, i) => {
+      wait(1);
+      items++;
+    }, () => {
+      chunks++;
+    }).then(() => {
+      assert.equal(data.length, items);
+      assert.isAbove(chunks, 9);
+      assert.isBelow(chunks, 12);
     });
   });
 
-  it('runs afterBlock even if work is only 1 block', done => {
+  it('runs afterBlock even if work is only 1 block', () => {
     let data = [null];
     let chunks = 0;
     let items = 0;
-    blocks.forEach(data, {
-      block: 100,
-      each (item, i) {
-        wait(1);
-        items++;
-      },
-      afterBlock () {
-        chunks++;
-      },
-      after () {
-        assert.equal(data.length, items);
-        assert.equal(chunks, 1);
-        done();
-      }
+
+    return blocks.forEach(data, 100, (item, i) => {
+      wait(1);
+      items++;
+    }, () => {
+      chunks++;
+    }).then(() => {
+      assert.equal(data.length, items);
+      assert.equal(chunks, 1);
     });
   })
+});
+
+describe('blocks.map', () => {
+  it('returns a new mapped array', () => {
+    return blocks.map([1,2,3], 0, (num, i) => num + i)
+      .then(arr => assert.deepEqual([1,3,5], arr));
+  });
 });
